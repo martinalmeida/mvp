@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RestAI · Agente IA Comercial — Diagrama MVP Completo</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <title>RestAI · Diagrama de Flujo Completo del Agente IA Comercial</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js">
+    </script>
     <style>
         :root {
             --bg: #0a0e14;
             --surface: #111820;
-            --border: rgba(255,255,255,0.07);
+            --border: rgba(255, 255, 255, 0.07);
             --text: #e2e8f0;
             --muted: #7f8ea3;
             --accent: #e2b04a;
             --radius: 12px;
             --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: var(--font);
             background: var(--bg);
@@ -26,388 +31,482 @@
             flex-direction: column;
             align-items: center;
             padding: 16px;
-            gap: 12px;
         }
         .header {
             text-align: center;
-            max-width: 1500px;
+            margin-bottom: 18px;
+            max-width: 1400px;
             width: 100%;
         }
         .header h1 {
-            font-size: 21px;
+            font-size: 22px;
             font-weight: 700;
+            letter-spacing: -0.4px;
             background: linear-gradient(135deg, #e2b04a, #f5d78c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 4px;
         }
-        .header .sub { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-        .badge-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-        .badge {
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            border: 1px solid;
+        .header .sub {
+            font-size: 13px;
+            color: var(--muted);
         }
-        .badge-gold  { background: rgba(226,176,74,.12); border-color: rgba(226,176,74,.4); color: #f5d78c; }
-        .badge-blue  { background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.4); color: #93c5fd; }
-        .badge-gray  { background: rgba(107,114,128,.12); border-color: rgba(107,114,128,.4); color: #9ca3af; }
-
         .diagram-wrapper {
             width: 100%;
             max-width: 1500px;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 40px 12px 14px;
+            padding: 18px 12px;
             overflow: auto;
             cursor: grab;
             position: relative;
-            min-height: 76vh;
-            max-height: 86vh;
-            box-shadow: 0 4px 30px rgba(0,0,0,.5);
+            flex: 1;
+            min-height: 75vh;
+            max-height: 85vh;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
-        .diagram-wrapper:active { cursor: grabbing; }
-        .diagram-wrapper .mermaid { display: flex; justify-content: center; min-width: max-content; }
-        .diagram-wrapper svg { max-width: none; height: auto; }
-
-        .zoom-bar {
-            position: absolute;
-            top: 10px; right: 12px;
-            display: flex; gap: 6px;
+        .diagram-wrapper:active {
+            cursor: grabbing;
+        }
+        .diagram-wrapper .mermaid {
+            display: flex;
+            justify-content: center;
+            min-width: max-content;
+        }
+        .diagram-wrapper svg {
+            max-width: none;
+            height: auto;
+            transition: transform 0.2s ease;
+        }
+        .toolbar {
+            position: sticky;
+            top: 8px;
+            right: 12px;
+            float: right;
+            display: flex;
+            gap: 6px;
             z-index: 10;
+            margin-bottom: -28px;
+            flex-wrap: wrap;
         }
-        .zoom-btn {
-            width: 30px; height: 30px;
+        .tool-btn {
+            width: 30px;
+            height: 30px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: #1a2230;
             color: var(--text);
             cursor: pointer;
             font-size: 16px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all .15s;
+            font-family: var(--font);
             backdrop-filter: blur(4px);
+            white-space: nowrap;
+            padding: 0 8px;
+            width: auto;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 500;
         }
-        .zoom-btn:hover { background: rgba(226,176,74,.15); border-color: rgba(226,176,74,.5); color: #f5d78c; }
-
+        .tool-btn:hover {
+            background: rgba(226, 176, 74, 0.15);
+            border-color: rgba(226, 176, 74, 0.5);
+            color: #f5d78c;
+        }
         .legend {
-            max-width: 1500px;
-            width: 100%;
+            position: sticky;
+            bottom: 8px;
+            left: 12px;
+            float: left;
             background: #111820cc;
             backdrop-filter: blur(8px);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 10px 16px;
-            font-size: 11px;
+            padding: 8px 14px;
+            font-size: 10px;
             color: var(--muted);
+            z-index: 10;
+            margin-top: -40px;
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
-            align-items: center;
+            gap: 10px;
         }
-        .legend .section { font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: rgba(226,176,74,.6); margin-right: 2px; }
-        .legend span { display: inline-flex; align-items: center; gap: 5px; }
-        .dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 2px;
+        }
         @media (max-width: 768px) {
-            .header h1 { font-size: 17px; }
-            .diagram-wrapper { padding-top: 44px; min-height: 65vh; max-height: 75vh; }
-            .legend { font-size: 9.5px; }
+            body {
+                padding: 8px;
+            }
+            .diagram-wrapper {
+                padding: 10px 4px;
+                min-height: 65vh;
+                max-height: 75vh;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            .tool-btn {
+                width: auto;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 6px;
+            }
+            .legend {
+                font-size: 9px;
+                padding: 5px 10px;
+                gap: 6px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>🍽️ RestAI · Agente IA Comercial — MVP Completo</h1>
-    <div class="sub">Validación Colombia · Restaurantes 40–150 asientos · Ecosistema 12 Agentes IA · Objetivo: ↑ Promedio diario de clientes</div>
-    <div class="badge-row">
-        <span class="badge badge-gold">GPT-4o</span>
-        <span class="badge badge-blue">Vapi.ai / Retell AI</span>
-        <span class="badge badge-blue">OpenAI Whisper</span>
-        <span class="badge badge-blue">API OpenTable</span>
-        <span class="badge badge-blue">Twilio</span>
-        <span class="badge badge-blue">Momos / GPT-4</span>
-        <span class="badge badge-blue">Klaviyo AI / HubSpot Breeze</span>
-        <span class="badge badge-blue">DataRobot / Scikit-learn</span>
-        <span class="badge badge-blue">Midjourney / Adobe Firefly</span>
-        <span class="badge badge-gray">Loggro · Vendty · Fudo · Siigo · Soft Restaurant · LobbyPMS · Toteat · Alegra · Excel · CRM</span>
+    <div class="header">
+        <h1>🍽️ RestAI · Diagrama de Flujo Completo del Agente IA Comercial</h1>
+        <div class="sub">MVP · Validación Colombia · Restaurantes 40–150 asientos · Ecosistema 12 agentes</div>
     </div>
-</div>
 
-<div class="diagram-wrapper" id="dw">
-    <div class="zoom-bar">
-        <button class="zoom-btn" onclick="zd(1.25)">+</button>
-        <button class="zoom-btn" onclick="zd(0.8)">−</button>
-        <button class="zoom-btn" onclick="rd()">↺</button>
-    </div>
-    <pre class="mermaid">
-%%{init:{'theme':'dark','themeVariables':{'primaryColor':'#1e293b','primaryTextColor':'#e2e8f0','primaryBorderColor':'rgba(226,176,74,0.45)','lineColor':'#7f8ea3','secondaryColor':'#111820','tertiaryColor':'#0a0e14','fontSize':'12.5px','fontFamily':'"Segoe UI",system-ui,sans-serif'},'flowchart':{'useMaxWidth':true,'htmlLabels':true,'curve':'basis','padding':20,'nodeSpacing':40,'rankSpacing':36}}}%%
+    <div class="diagram-wrapper" id="diagram-wrapper">
+        <div class="toolbar">
+            <button class="tool-btn" onclick="zoomDiag(1.25)" title="Acercar">🔍+</button>
+            <button class="tool-btn" onclick="zoomDiag(0.8)" title="Alejar">🔍-</button>
+            <button class="tool-btn" onclick="resetZoomDiag()" title="Restablecer zoom">↺</button>
+            <button class="tool-btn" onclick="exportAsPNG()" title="Exportar como imagen PNG">📥 PNG</button>
+        </div>
+        <div class="legend">
+            <span><span class="dot" style="background:#e2b04a;"></span> Inicio / Activación</span>
+            <span><span class="dot" style="background:#f59e0b;"></span> Decisión</span>
+            <span><span class="dot" style="background:#3b82f6;"></span> Proceso clave</span>
+            <span><span class="dot" style="background:#10b981;"></span> Fin / Éxito</span>
+            <span><span class="dot" style="background:#ef4444;"></span> Sin precios</span>
+            <span><span class="dot" style="background:#8b5cf6;"></span> Con precios</span>
+            <span><span class="dot" style="background:#6b7280;"></span> Futuro / Por ahora no</span>
+        </div>
+        <pre class="mermaid">
+%%{init: {'theme':'dark','themeVariables':{'primaryColor':'#1e293b','primaryTextColor':'#e2e8f0','primaryBorderColor':'rgba(226,176,74,0.5)','lineColor':'#7f8ea3','secondaryColor':'#111820','tertiaryColor':'#0a0e14','fontSize':'13px','fontFamily':'"Segoe UI", system-ui, -apple-system, sans-serif'},'flowchart':{'useMaxWidth':true,'htmlLabels':true,'curve':'basis','padding':22,'nodeSpacing':45,'rankSpacing':40}}}%%
 graph TD
+    START["🚀 INICIO: Agente Comercial Activado"]
+    START --> PLAN["📋 Recibe Plan Estratégico de Ventas del Dueño"]
+    PLAN --> DB["🏢 Carga Base de Datos Empresarial del Sector"]
+    DB --> INBOUND{"📞 ¿Canal de Entrada?"}
 
-%% ─────────────────────────────────────
-%% 1. ARRANQUE
-%% ─────────────────────────────────────
-START(["🚀 INICIO<br/>Agente IA Comercial activado<br/>IA base: GPT-4o<br/>Rol: Experto marketer · 15 años HORECA<br/>Objetivo: ↑ Promedio diario de clientes<br/>Personalidad: Carismático · Elegante · Persuasivo<br/>Canales: Voz · Chat · Dashboard · Correo · WhatsApp"])
-START --> REC_PLAN["📋 Recibe Plan Estratégico de Ventas<br/>suministrado por el Dueño del restaurante"]
-REC_PLAN --> REC_BD["🏢 Carga Base de Datos Empresarial del sector<br/>suministrada por el Dueño"]
-REC_BD --> CANAL{"📞 ¿Canal de entrada?"}
+    %% ── SUBFLUJO: CAPTACIÓN INBOUND ──
+    INBOUND -->|"Llamada entrante"| VAPI["🎤 Vapi.ai / Retell AI: Atiende con voz humana ultra-realista"]
+    VAPI --> WHISPER["🧠 OpenAI Whisper: Transcribe la solicitud del cliente"]
+    WHISPER --> OPENT["🔍 API OpenTable: Consulta disponibilidad en milisegundos"]
+    OPENT --> DISP{"¿Hay disponibilidad?"}
+    DISP -->|"Sí"| SMS["✅ Twilio: Envía SMS de confirmación + link de ubicación"]
+    DISP -->|"No"| ALT["📅 Ofrecer horarios alternativos"]
+    ALT --> OPENT
+    SMS --> POSTV["⏰ 2h post-cena: Momos/GPT-4 contacta para pedir reseña en Google Maps"]
+    POSTV --> COTIZ["📄 Pasar a Cotización"]
 
-%% ─────────────────────────────────────
-%% 2A. CAPTACIÓN INBOUND — RESERVAS
-%% ─────────────────────────────────────
-CANAL -->|"Llamada / reserva entrante"| VAPI["🎤 Vapi.ai / Retell AI<br/>Atiende llamada con voz humana<br/>ultra-realista sin retraso"]
-VAPI --> WHISPER["🧠 OpenAI Whisper<br/>Transcribe lo que el cliente dice<br/>Ej: 'Mesa para 4, uno es celíaco'"]
-WHISPER --> OPENTABLE["🔍 API OpenTable<br/>Consulta disponibilidad en milisegundos"]
-OPENTABLE --> DISP{"¿Hay disponibilidad?"}
-DISP -->|"Sí"| TWILIO["✅ Twilio<br/>SMS de confirmación<br/>+ link de ubicación al cliente"]
-DISP -->|"No"| HORALTS["📅 Ofrecer horarios alternativos"]
-HORALTS --> OPENTABLE
-TWILIO --> MOMOS["⏰ 2 horas post-cena<br/>Momos / GPT-4 contacta al cliente<br/>para pedir reseña en Google Maps"]
-MOMOS --> COTIZ
+    %% ── SUBFLUJO: PROSPECCIÓN B2B OUTBOUND ──
+    INBOUND -->|"Prospección activa"| SEGM{"🎯 Identificar Perfil del Contacto Empresarial"}
+    SEGM -->|"Secretaría de Gerencia"| SCR1["👩‍💼 Script Gatekeeper: Línea Prioridad Directa + Vino Reserva cortesía"]
+    SEGM -->|"Gerente General"| SCR2["👔 Script Privacidad Total: Cata privada + Salón VIP exclusivo"]
+    SEGM -->|"Jefe de RRHH"| SCR3["👥 Script Eventos Corp: Decoración 100% gratis + Presupuesto en 5 min"]
+    SCR1 --> ENVIO["📤 Enviar por WhatsApp"]
+    SCR2 --> ENVIO
+    SCR3 --> ENVIO
 
-%% ─────────────────────────────────────
-%% 2B. PROSPECCIÓN OUTBOUND B2B
-%% ─────────────────────────────────────
-CANAL -->|"Prospección activa B2B"| SEGM{"🎯 Identificar perfil del contacto<br/>en Base de Datos Empresarial"}
+    %% ── SUBFLUJO: NURTURING (SEGUIMIENTO) ──
+    ENVIO --> RESP1{"¿El cliente responde?"}
+    RESP1 -->|"Sí - Interesado"| COTIZ
+    RESP1 -->|"No"| N72["⏰ 72h: Enviar foto de evento reciente exitoso"]
+    N72 --> RESP2{"¿Responde ahora?"}
+    RESP2 -->|"Sí"| COTIZ
+    RESP2 -->|"No"| N7D["⚠️ 7 días: Mensaje de Escasez - 'Solo 2 mesas VIP disponibles'"]
+    N7D --> RESP3{"¿Responde?"}
+    RESP3 -->|"Sí"| COTIZ
+    RESP3 -->|"No"| CRM1["📊 Registrar en CRM: reintentar siguiente ciclo mensual"]
 
-SEGM -->|"Secretaría de Gerencia<br/>(Gatekeeper)"| SCR1["👩‍💼 Script 1 — Gatekeeper<br/>Objetivo: facilitarle la vida<br/>Propuesta: Línea de Prioridad Directa<br/>🎁 Regalo: Botella de vino reserva<br/>en próxima reserva para Gerencia<br/>Mesa favorita lista sin necesidad<br/>de llamar · Envío de menú semanal"]
-SEGM -->|"Gerente General<br/>(Tomador de decisión)"| SCR2["👔 Script 2 — Gerencia General<br/>Objetivo: estatus y privacidad<br/>Propuesta: Protocolo Privacidad Total<br/>🎁 Regalo: Cata privada con Sommelier<br/>Salón VIP para junta estratégica<br/>15 minutos de cortesía"]
-SEGM -->|"Jefe de Talento Humano<br/>(RRHH)"| SCR3["👥 Script 3 — Talento Humano<br/>Objetivo: bienestar y logística<br/>Propuesta: aliados en integración de equipo<br/>🎁 Regalo: 100% decoración temática gratis<br/>Menús personalizados con logo corporativo<br/>Presupuesto 'todo incluido' en 5 minutos"]
+    %% ── SUBFLUJO: COTIZADOR INTELIGENTE ──
+    COTIZ["📄 Cotizador Inteligente: Base Datos con Productos, Gramajes, Precios y Alternativas"]
+    COTIZ --> GEN["🤖 IA genera Cotización en Tiempo Real"]
+    GEN --> ENVIAR["📤 Envía Cotización por Correo o WhatsApp"]
+    ENVIAR --> PUNT{"¿Cliente puntualiza N° personas y menú?"}
+    PUNT -->|"Sí"| PRES["💰 IA genera Presupuesto Único (gramajes x comensales)"]
+    PUNT -->|"No"| ENVIAR
+    PRES --> ENVP["📤 Enviar Presupuesto al Cliente"]
+    ENVP --> CONF{"¿Cliente envía Carta Membreteada (empresa) o Anticipo 50% (persona)?"}
+    CONF -->|"Sí"| OS["📝 Generar Orden de Servicio Parametrizada"]
+    CONF -->|"No"| ENVP
 
-SCR1 --> ENVIO_WA["📤 Envío por WhatsApp<br/>(hiper-personalizado por perfil)"]
-SCR2 --> ENVIO_WA
-SCR3 --> ENVIO_WA
+    %% ── SUBFLUJO: ORDEN DE SERVICIO ──
+    OS --> OS_DET["📋 OS: ID, Estado Confirmada, 5 Bloques"]
+    OS_DET --> B1["1️⃣ Info General: Evento, Fecha, Comensales, Ubicación"]
+    B1 --> B2["2️⃣ Logística y Montaje (Maitre): Tipo montaje, Protocolo, AV"]
+    B2 --> B3["3️⃣ Producción (Chef): Menú x tiempos, Gramajes, Restricciones, Hora"]
+    B3 --> B4["4️⃣ Bar y Bebidas: Plan bebidas, Vinos, Café y Petit Fours"]
+    B4 --> B5["5️⃣ Resumen Financiero: Presupuesto, Método pago, Saldo, Facturación"]
+    B5 --> DIST["🤖 IA: Despiece Informativo"]
 
-%% ─────────────────────────────────────
-%% 3. NURTURING — SEGUIMIENTO
-%% ─────────────────────────────────────
-ENVIO_WA --> R1{"¿El cliente responde?"}
-R1 -->|"Sí — interesado"| COTIZ
-R1 -->|"No responde"| N72["📸 A las 72 horas<br/>Envía foto de alta calidad<br/>de evento reciente exitoso<br/>'Así lució nuestro salón para<br/>Empresa X. Me recordó a lo que hablamos'"]
-N72 --> R2{"¿Responde?"}
-R2 -->|"Sí"| COTIZ
-R2 -->|"No"| N7D["⚠️ A los 7 días — Escasez<br/>'Solo 2 mesas VIP disponibles<br/>para [fecha festivo o viernes].<br/>Avísame para bloqueártelas'"]
-N7D --> R3{"¿Responde?"}
-R3 -->|"Sí"| COTIZ
-R3 -->|"No"| CRM_PIPE["📊 Registrar en CRM<br/>Pipeline de ventas actualizado<br/>Reintentar siguiente ciclo mensual"]
+    %% ── SUBFLUJO: DISTRIBUCIÓN OS ──
+    DIST --> D1["👨‍🍳 COCINA: Platos + Gramajes + Hora servicio ❌ SIN precios"]
+    DIST --> D2["📦 COMPRAS: Insumos faltantes 48h antes ❌ SIN precios"]
+    DIST --> D3["🤵 MAITRE: Plano mesas + Protocolo + Detalles ✅ CON precios"]
+    DIST --> D4["💰 CAJA: Factura proforma + Seguimiento 50% ✅ CON precios"]
+    DIST --> D5["📊 GERENTE: OS Completa para información ✅ CON precios"]
+    DIST --> D6["🧹 SERVICIOS GENERALES: Menaje + Mantelería ❌ SIN precios"]
+    DIST --> D7["🙋 CLIENTE: PDF Elegante resumen acordado"]
+    D1 --> AGENDA["📅 Bloquear Espacio en Agenda del Restaurante"]
+    D2 --> AGENDA
+    D3 --> AGENDA
+    D4 --> AGENDA
+    D5 --> AGENDA
+    D6 --> AGENDA
+    D7 --> AGENDA
 
-%% ─────────────────────────────────────
-%% 4. COTIZADOR INTELIGENTE
-%% ─────────────────────────────────────
-COTIZ["📄 COTIZADOR INTELIGENTE<br/>Base de datos: productos · gramajes · precios<br/>Servicios adicionales: decoración · impresión<br/>de menús · ayudas audiovisuales"]
-COTIZ --> GEN_COT["🤖 IA genera Cotización en tiempo real"]
-GEN_COT --> ENV_COT["📤 Envía Cotización<br/>por correo o WhatsApp"]
-ENV_COT --> PUNT{"¿El cliente puntualiza<br/>N° de personas y menú?"}
-PUNT -->|"No"| ENV_COT
-PUNT -->|"Sí"| PRESUP["💰 Software genera Presupuesto Único<br/>Cálculo automático: gramajes × comensales<br/>Valor total del evento"]
-PRESUP --> ENV_PRES["📤 Envía Presupuesto<br/>por correo o WhatsApp"]
-ENV_PRES --> CONF{"¿El cliente formaliza?"}
-CONF -->|"Empresa:<br/>Carta membreteada recibida"| OS_GEN
-CONF -->|"Persona natural:<br/>Anticipo ≥ 50% recibido"| OS_GEN
-CONF -->|"No confirma"| ENV_PRES
+    %% ── SUBFLUJO: EJECUCIÓN DEL EVENTO ──
+    AGENDA --> EJEC["✅ Evento Ejecutado"]
 
-%% ─────────────────────────────────────
-%% 5. ORDEN DE SERVICIO — 5 BLOQUES
-%% ─────────────────────────────────────
-OS_GEN["📝 GENERAR ORDEN DE SERVICIO (OS)<br/>ID: #OS-YYYY-NNN<br/>Estado: Confirmada"]
-OS_GEN --> B1["1️⃣ INFORMACIÓN GENERAL<br/>Nombre del Evento / Empresa<br/>Anfitrión · Contacto · Coordinador<br/>Fecha y hora: inicio y fin<br/>Comensales: garantizados vs. máximos<br/>Ubicación: Salón VIP / Terraza / Mesa Imperial"]
-B1 --> B2["2️⃣ LOGÍSTICA Y MONTAJE — Para el Maitre<br/>Tipo de montaje: Mesa en U / Imperial / Cóctel<br/>Protocolo de servicio · Tiempos de espera<br/>Servicios adicionales: decoración · mantelería<br/>Impresión de menús personalizados con logo<br/>Ayudas audiovisuales: video beam · sonido · micrófonos"]
-B2 --> B3["3️⃣ REQUERIMIENTOS DE PRODUCCIÓN — Para el Chef<br/>Menú por tiempos: Entrada · Fuerte · Postre<br/>Gramaje total: cálculo automático IA según recetas<br/>Restricciones alimentarias: veganos · celíacos · alergias (CRM)<br/>Hora exacta de salida de cada tiempo<br/>Si cóctel: hora de servicio de pasabocas"]
-B3 --> B4["4️⃣ BAR Y BEBIDAS<br/>Plan: barra libre / descorche / por consumo / sin alcohol<br/>Vinos sugeridos + temperatura de servicio<br/>Café y Petit Fours: hora de servicio tras el postre"]
-B4 --> B5["5️⃣ RESUMEN FINANCIERO — Para Gerente / Caja<br/>Presupuesto Total: valor único<br/>Método de pago: convenio / tarjeta / etc.<br/>Saldo pendiente: personal = sin saldos /<br/>empresarial = factura + Nota de Cobro<br/>Facturación: NIT/RUT para factura electrónica"]
-B5 --> DESPIECE["🤖 IA: Despiece Informativo Automático<br/>Distribuye solo lo pertinente a cada área"]
+    %% ── SUBFLUJO: RRSS ──
+    EJEC --> RRSS["📸 Recepcionista de Comedor genera contenido (fotos/videos con permiso)"]
+    RRSS --> PUBLI["🤖 Agente Comercial programa 3 publicaciones por semana"]
+    PUBLI --> ENGAGE["📊 Medir Métricas de Engagement y Conversión"]
 
-%% ─────────────────────────────────────
-%% 6. DISTRIBUCIÓN OS POR ÁREA
-%% ─────────────────────────────────────
-DESPIECE --> DA["👨‍🍳 CHEF / COCINA<br/>Lista de insumos totalizados<br/>Gramaje × comensales · Tiempos de salida<br/>❌ Sin precios"]
-DESPIECE --> DB2["📦 COMPRAS<br/>Lista de insumos faltantes<br/>Pedidos extraordinarios:<br/>flores · menús impresos · ingredientes especiales<br/>⏰ Alerta 48 h antes · ❌ Sin precios"]
-DESPIECE --> DC["🤵 MAITRE<br/>Plano de mesas · Protocolo de servicio<br/>Detalles del cliente: alergias · protocolos<br/>✅ Con precios"]
-DESPIECE --> DD["💰 CAJA<br/>Factura proforma<br/>Seguimiento 50% restante del pago<br/>✅ Con precios"]
-DESPIECE --> DE["📊 GERENTE ADMINISTRATIVO<br/>OS completa para su información<br/>✅ Con precios"]
-DESPIECE --> DF["🧹 SERVICIOS GENERALES<br/>Alistamiento de menaje y mantelería<br/>❌ Sin precios"]
-DESPIECE --> DG["🙋 CLIENTE<br/>PDF elegante con resumen<br/>de lo acordado · Para su tranquilidad"]
+    %% ── SUBFLUJO: FIDELIZACIÓN VVIP ──
+    ENGAGE --> FID["⭐ Ecosistema de Fidelización VVIP"]
+    FID --> RECON["🔍 Agente de Reconocimiento: Rastrea perfil público del cliente (LinkedIn/RRSS)"]
+    RECON --> FICHA["📋 Ficha del Maitre: Datos clave antes de la llegada (Por ahora no)"]
+    FICHA --> RECIB["🤵 Recibimiento Hiper-Personalizado (Por ahora no)"]
+    RECIB --> SERV["🍽️ Servicio: Sommelier/Capitán sugieren según historial (Por ahora no)"]
+    SERV --> FEED["📝 Post-Servicio: Jefe de Rango dicta notas por voz a texto (Por ahora no)"]
+    FEED --> ANALITICA["🧠 IA analiza feedback y programa acción futura"]
+    ANALITICA --> TIPO{"¿Tipo de cliente?"}
+    TIPO -->|"Alta frecuencia + alto ticket"| CLUB["🍷 Club de Cosechas: Invitación a cata privada (Por ahora no)"]
+    TIPO -->|"Ticket alto"| LTV["📈 Calcular LTV: Valor de Vida del Cliente (Por ahora no)"]
+    TIPO -->|"21 días sin visita"| CHURN["⚠️ Alerta Churn: Llamada de cortesía del Maitre (Por ahora no)"]
+    CLUB --> CICLO["🔄 Ciclo de Re-compra"]
+    LTV --> CICLO
+    CHURN --> CICLO
+    CICLO --> RECON
 
-DA --> AGENDA["📅 Abrir espacio en Agenda del Restaurante<br/>Bloquear fecha y hora del evento"]
-DB2 --> AGENDA
-DC --> AGENDA
-DD --> AGENDA
-DE --> AGENDA
-DF --> AGENDA
-DG --> AGENDA
+    %% ── SUBFLUJO: KPIs ──
+    ANALITICA --> KPIS["📊 Medir KPIs Estratégicos"]
+    KPIS --> K1["📈 KPI 1: Tasa Conversión Eventos (OS/Cotizaciones) > 30%"]
+    KPIS --> K2["📈 KPI 2: Crecimiento Base Datos +10% mensual"]
+    KPIS --> K3["📈 KPI 3: Rentabilidad Eventos > 40%"]
+    KPIS --> K4["📈 KPI 4: Ticket Promedio por Evento (maximizar upselling)"]
+    KPIS --> K5["📈 KPI 5: Efectividad en Redes (ROI de publicaciones)"]
+    K1 --> REPORTE["📤 Reporte Final al Dueño / Gerencia"]
+    K2 --> REPORTE
+    K3 --> REPORTE
+    K4 --> REPORTE
+    K5 --> REPORTE
 
-%% ─────────────────────────────────────
-%% 7. EJECUCIÓN DEL EVENTO
-%% ─────────────────────────────────────
-AGENDA --> EJEC["✅ EVENTO EJECUTADO<br/>Operación según OS · Todos los departamentos alineados"]
+    %% ── SUBFLUJO: CONECTIVIDAD CON OTROS AGENTES ──
+    REPORTE --> ECO["🔗 Interacción con los otros 11 Agentes IA del Ecosistema"]
+    ECO --> AG1["🏠 Dueño/Anfitrión"]
+    ECO --> AG2["📊 Gerente Admin-Financiero"]
+    ECO --> AG3["🧾 Contador"]
+    ECO --> AG4["💰 Caja"]
+    ECO --> AG5["👥 Gestión Talento Humano"]
+    ECO --> AG6["📦 Compras"]
+    ECO --> AG7["📉 Costos"]
+    ECO --> AG8["👨‍🍳 Chef"]
+    ECO --> AG9["🤵 Maitre"]
+    ECO --> AG10["🧹 Servicios Generales"]
+    ECO --> AG11["📝 Secretario Junta Directiva"]
 
-%% ─────────────────────────────────────
-%% 8. GESTIÓN DE RRSS
-%% ─────────────────────────────────────
-EJEC --> RRSS_CONT["📸 Recepcionista de Comedor<br/>Genera contenido: fotos / videos<br/>con permiso del cliente"]
-RRSS_CONT --> RRSS_PUB["🤖 Agente Comercial publica<br/>3 veces por semana en RRSS<br/>Contenido suministrado por la Recepcionista"]
-RRSS_PUB --> RRSS_MET["📊 Métricas de Engagement y Conversión<br/>Reservas originadas en RRSS / Total publicaciones<br/>Alarma de reserva activada · ROI del tiempo invertido"]
+    AG1 --> FIN["🏁 FIN: Agente Comercial operando en ecosistema completo"]
 
-%% ─────────────────────────────────────
-%% 9. MARKETING — HIPER-PERSONALIZACIÓN
-%% ─────────────────────────────────────
-RRSS_MET --> MKTG["🎯 ÁREA DE MARKETING Y FIDELIZACIÓN<br/>Hiper-Personalización"]
-MKTG --> MK1["♻️ Recuperación de Clientes<br/>Klaviyo AI / HubSpot Breeze<br/>Identifica quien no ha venido en 30 días<br/>Envía cupón por su plato favorito"]
-MKTG --> MK2["⭐ Gestión de Reputación<br/>Momos / Canva Magic Write<br/>Responde reseñas Google / TripAdvisor<br/>Analiza tono · Resuelve quejas automáticamente"]
-MKTG --> MK3["📉 Predicción de Fugas<br/>DataRobot / Python Scikit-learn<br/>Detecta patrones: cliente que dejó<br/>de venir los jueves · Alerta al dueño"]
-MKTG --> MK4["📷 Campañas de Contenido<br/>Midjourney / Adobe Firefly<br/>Fotos realistas de platos para RRSS<br/>sin sesión fotográfica costosa"]
+    %% ── ESTILOS ──
+    style START fill:#e2b04a,stroke:#f5d78c,color:#0a0e14
+    style FIN fill:#10b981,stroke:#34d399,color:#0a0e14
+    style INBOUND fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style DISP fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style SEGM fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style RESP1 fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style RESP2 fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style RESP3 fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style PUNT fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style CONF fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style TIPO fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+    style COTIZ fill:#3b82f6,stroke:#60a5fa,color:#fff
+    style OS fill:#3b82f6,stroke:#60a5fa,color:#fff
+    style DIST fill:#3b82f6,stroke:#60a5fa,color:#fff
+    style D1 fill:#ef4444,stroke:#f87171,color:#fff
+    style D2 fill:#ef4444,stroke:#f87171,color:#fff
+    style D3 fill:#8b5cf6,stroke:#a78bfa,color:#fff
+    style D4 fill:#8b5cf6,stroke:#a78bfa,color:#fff
+    style D5 fill:#8b5cf6,stroke:#a78bfa,color:#fff
+    style D6 fill:#ef4444,stroke:#f87171,color:#fff
+    style D7 fill:#3b82f6,stroke:#60a5fa,color:#fff
+    style FICHA fill:#6b7280,stroke:#9ca3af,color:#fff
+    style RECIB fill:#6b7280,stroke:#9ca3af,color:#fff
+    style SERV fill:#6b7280,stroke:#9ca3af,color:#fff
+    style FEED fill:#6b7280,stroke:#9ca3af,color:#fff
+    style CLUB fill:#6b7280,stroke:#9ca3af,color:#fff
+    style LTV fill:#6b7280,stroke:#9ca3af,color:#fff
+    style CHURN fill:#6b7280,stroke:#9ca3af,color:#fff
+        </pre>
+    </div>
 
-%% ─────────────────────────────────────
-%% 10. FIDELIZACIÓN VVIP
-%%     Items marcados (Por ahora no)
-%% ─────────────────────────────────────
-MK1 --> VVIP["⭐ ECOSISTEMA FIDELIZACIÓN VVIP<br/>CRM de Alto Nivel — Gestión de Relaciones de Lujo"]
-MK2 --> VVIP
-MK3 --> VVIP
-MK4 --> VVIP
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1e293b',
+                primaryTextColor: '#e2e8f0',
+                primaryBorderColor: 'rgba(226,176,74,0.5)',
+                lineColor: '#7f8ea3',
+                secondaryColor: '#111820',
+                tertiaryColor: '#0a0e14',
+                fontSize: '13px',
+                fontFamily: '"Segoe UI", system-ui, -apple-system, sans-serif',
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                padding: 22,
+                nodeSpacing: 45,
+                rankSpacing: 40,
+            },
+        });
 
-VVIP --> PASAPORTE["🪪 Pasaporte Gastronómico Digital<br/>Tablet del Maitre reconoce al cliente por su número<br/>CRM entrega toda la info del cliente<br/>para personalizar la visita<br/>🔜 POR AHORA NO"]
+        let currentZoom = 1;
+        const wrapper = document.getElementById('diagram-wrapper');
 
-VVIP --> RECON["🔍 Agente de Reconocimiento<br/>Al reservar: rastrea perfil público del cliente<br/>LinkedIn / redes sociales permitidas<br/>Tablet Maitre / Recepcionista captura nombre + RRSS<br/>Cruce con CRM"]
+        function getSvg() {
+            return wrapper ? wrapper.querySelector('svg') : null;
+        }
 
-RECON --> FICHA["📋 Ficha del Maitre<br/>Notificación antes de que llegue el cliente:<br/>'Sr. Gómez es arquitecto, celebra aniversario,<br/>prefiere mesa cerca de la ventana,<br/>última botella: Rioja Reserva'<br/>Recibimiento hiper-personalizado<br/>🔜 POR AHORA NO"]
+        function zoomDiag(factor) {
+            const svg = getSvg();
+            if (!svg) return;
+            currentZoom *= factor;
+            if (currentZoom < 0.25) currentZoom = 0.25;
+            if (currentZoom > 4) currentZoom = 4;
+            svg.style.transform = `scale(${currentZoom})`;
+            svg.style.transformOrigin = 'top left';
+            svg.style.transition = 'transform 0.2s ease';
+        }
 
-FICHA --> SERV_VVIP["🍽️ Durante el servicio<br/>Sommelier / Capitán sugieren platos y vinos<br/>basados en historial del cliente<br/>🔜 POR AHORA NO"]
+        function resetZoomDiag() {
+            const svg = getSvg();
+            if (!svg) return;
+            currentZoom = 1;
+            svg.style.transform = 'scale(1)';
+            svg.style.transformOrigin = 'top left';
+            svg.style.transition = 'transform 0.2s ease';
+        }
 
-SERV_VVIP --> MEM["💬 Memoria Institucional — Post-Servicio<br/>Jefe de Rango / Sommelier dictan nota por voz a texto:<br/>'Le encantó el maridaje, término de carne pasado'<br/>IA programa invitación personalizada<br/>mencionando la mejora del Chef<br/>🔜 POR AHORA NO"]
+        // Exportar como PNG
+        function exportAsPNG() {
+            const svg = getSvg();
+            if (!svg) {
+                alert('El diagrama aún no se ha renderizado. Por favor espera unos segundos.');
+                return;
+            }
 
-MEM --> TIPO_CLI{"¿Tipo de cliente?"}
-TIPO_CLI -->|"Alta frecuencia<br/>+ alto ticket"| CLUB["🍷 Club de Cosechas<br/>IA identifica top 50 clientes en vino<br/>Campaña: cena privada cata nueva añada<br/>En alianza con proveedores de vinos<br/>🔜 POR AHORA NO"]
-TIPO_CLI -->|"Alto ticket,<br/>15 días sin reservar"| CHURN["⚠️ Prevención de Abandono — Churn<br/>21 días sin reservar = alerta al Maitre<br/>Llamada de cortesía o mensaje personal<br/>(no correo masivo)<br/>🔜 POR AHORA NO"]
-TIPO_CLI -->|"Todos los clientes"| LTV["📈 Valor de Vida del Cliente (LTV)<br/>Reporte mensual al dueño<br/>Cliente fiel gasta 30% más por visita<br/>🔜 POR AHORA NO"]
+            // Clonar el SVG para no afectar la vista actual
+            const clone = svg.cloneNode(true);
+            // Asegurar que el SVG tenga dimensiones explícitas (importante para el canvas)
+            const bbox = svg.getBBox();
+            clone.setAttribute('width', bbox.width + 40);
+            clone.setAttribute('height', bbox.height + 40);
+            clone.setAttribute('viewBox', `${bbox.x - 20} ${bbox.y - 20} ${bbox.width + 40} ${bbox.height + 40}`);
 
-CLUB --> CICLO["🔄 Ciclo de re-compra y fidelidad"]
-CHURN --> CICLO
-LTV --> CICLO
-CICLO --> RECON
+            // Serializar a string
+            const serializer = new XMLSerializer();
+            const svgStr = serializer.serializeToString(clone);
+            const svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
 
-%% ─────────────────────────────────────
-%% 11. KPIs
-%% ─────────────────────────────────────
-CICLO --> KPIS["📊 KPIs ESTRATÉGICOS"]
-KPIS --> K1["📈 KPI 1 — Tasa de Conversión de Eventos<br/>(OS generadas / Cotizaciones enviadas) × 100<br/>Meta: > 30%"]
-KPIS --> K2["📈 KPI 2 — Crecimiento de Base de Datos<br/>Nuevos contactos empresariales calificados / mes<br/>Meta: +10% mensual"]
-KPIS --> K3["📈 KPI 3 — Rentabilidad de Eventos<br/>(Precio Venta − Costo Total OS) / Precio Venta<br/>Meta: > 40%"]
-KPIS --> K4["📈 KPI 4 — Ticket Promedio por Evento<br/>Total ventas eventos / N° eventos realizados<br/>Maximizar mediante servicios adicionales"]
-KPIS --> K5["📈 KPI 5 — Efectividad en Redes<br/>Reservas originadas en RRSS / Total publicaciones<br/>Medir ROI del tiempo invertido"]
-K1 --> REPORTE["📤 Reporte al Dueño / Gerencia"]
-K2 --> REPORTE
-K3 --> REPORTE
-K4 --> REPORTE
-K5 --> REPORTE
+            // Crear imagen a partir del SVG
+            const img = new Image();
+            img.onload = function() {
+                // Crear canvas con fondo oscuro (igual al fondo del diagrama)
+                const canvas = document.createElement('canvas');
+                canvas.width = bbox.width + 40;
+                canvas.height = bbox.height + 40;
+                const ctx = canvas.getContext('2d');
+                // Fondo oscuro
+                ctx.fillStyle = '#0a0e14';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // Dibujar la imagen SVG encima
+                ctx.drawImage(img, 0, 0);
 
-%% ─────────────────────────────────────
-%% 12. ECOSISTEMA 11 AGENTES
-%%     Marcado (Por ahora no)
-%% ─────────────────────────────────────
-REPORTE --> ECO["🔗 INTERACCIÓN CON LOS 11 AGENTES IA<br/>El Agente Comercial puede actuar solo o en conjunto<br/>Comunicación fluida dentro del ecosistema<br/>🔜 POR AHORA NO — Fase validación de mercado"]
-ECO --> AG1["🏠 Agente IA Dueño / Anfitrión"]
-ECO --> AG2["📊 Agente IA Gerente Administrativo-Financiero"]
-ECO --> AG3["🧾 Agente IA Contador"]
-ECO --> AG4["💰 Agente IA Caja"]
-ECO --> AG5["👥 Agente IA Gestión del Talento Humano"]
-ECO --> AG6["📦 Agente IA Compras"]
-ECO --> AG7["📉 Agente IA Costos"]
-ECO --> AG8["👨‍🍳 Agente IA Chef"]
-ECO --> AG9["🤵 Agente IA Maitre"]
-ECO --> AG10["🧹 Agente IA Servicios Generales y Mantenimiento"]
-ECO --> AG11["📝 Agente IA Secretario de Junta Directiva"]
-AG1 --> FIN(["🏁 FIN<br/>Agente Comercial operando en ecosistema completo<br/>Canales: Voz · Chat · Dashboard · Correo · WhatsApp"])
+                // Convertir a PNG y descargar
+                const pngUrl = canvas.toDataURL('image/png');
+                const downloadLink = document.createElement('a');
+                downloadLink.href = pngUrl;
+                downloadLink.download = 'diagrama-agente-comercial.png';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
 
-%% ─────────────────────────────────────
-%% ESTILOS
-%% ─────────────────────────────────────
-style START     fill:#e2b04a,stroke:#f5d78c,color:#0a0e14
-style FIN       fill:#10b981,stroke:#34d399,color:#0a0e14
+                // Liberar memoria
+                URL.revokeObjectURL(url);
+            };
+            img.src = url;
+        }
 
-%% Decisiones
-style CANAL     fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
-style DISP      fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
-style SEGM      fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
-style R1        fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
-style R2        fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
-style R3        fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
-style PUNT      fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
-style CONF      fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
-style TIPO_CLI  fill:#f59e0b,stroke:#fbbf24,color:#0a0e14
+        // Pan con mouse
+        let isPanning = false;
+        let startX, startY, scrollLeft, scrollTop;
 
-%% Procesos MVP activos
-style COTIZ     fill:#1e40af,stroke:#3b82f6,color:#fff
-style OS_GEN    fill:#1e40af,stroke:#3b82f6,color:#fff
-style DESPIECE  fill:#1e40af,stroke:#3b82f6,color:#fff
-style KPIS      fill:#1e40af,stroke:#3b82f6,color:#fff
-style VVIP      fill:#1e40af,stroke:#3b82f6,color:#fff
-style MKTG      fill:#1e40af,stroke:#3b82f6,color:#fff
+        wrapper.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.tool-btn')) return;
+            isPanning = true;
+            wrapper.style.cursor = 'grabbing';
+            startX = e.pageX - wrapper.offsetLeft;
+            startY = e.pageY - wrapper.offsetTop;
+            scrollLeft = wrapper.scrollLeft;
+            scrollTop = wrapper.scrollTop;
+        });
 
-%% Sin precios
-style DA        fill:#b91c1c,stroke:#ef4444,color:#fff
-style DB2       fill:#b91c1c,stroke:#ef4444,color:#fff
-style DF        fill:#b91c1c,stroke:#ef4444,color:#fff
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isPanning) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const y = e.pageY - wrapper.offsetTop;
+            wrapper.scrollLeft = scrollLeft - (x - startX) * 1.8;
+            wrapper.scrollTop = scrollTop - (y - startY) * 1.8;
+        });
 
-%% Con precios
-style DC        fill:#6d28d9,stroke:#8b5cf6,color:#fff
-style DD        fill:#6d28d9,stroke:#8b5cf6,color:#fff
-style DE        fill:#6d28d9,stroke:#8b5cf6,color:#fff
+        const stopPan = () => {
+            isPanning = false;
+            wrapper.style.cursor = 'grab';
+        };
+        wrapper.addEventListener('mouseup', stopPan);
+        wrapper.addEventListener('mouseleave', stopPan);
 
-%% Cliente
-style DG        fill:#1e40af,stroke:#3b82f6,color:#fff
+        // Pan táctil
+        wrapper.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.tool-btn')) return;
+            isPanning = true;
+            startX = e.touches[0].pageX - wrapper.offsetLeft;
+            startY = e.touches[0].pageY - wrapper.offsetTop;
+            scrollLeft = wrapper.scrollLeft;
+            scrollTop = wrapper.scrollTop;
+        }, { passive: false });
 
-%% Por ahora no
-style PASAPORTE fill:#374151,stroke:#6b7280,color:#d1d5db
-style FICHA     fill:#374151,stroke:#6b7280,color:#d1d5db
-style SERV_VVIP fill:#374151,stroke:#6b7280,color:#d1d5db
-style MEM       fill:#374151,stroke:#6b7280,color:#d1d5db
-style CLUB      fill:#374151,stroke:#6b7280,color:#d1d5db
-style CHURN     fill:#374151,stroke:#6b7280,color:#d1d5db
-style LTV       fill:#374151,stroke:#6b7280,color:#d1d5db
-style ECO       fill:#374151,stroke:#6b7280,color:#d1d5db
-    </pre>
-</div>
+        wrapper.addEventListener('touchmove', (e) => {
+            if (!isPanning) return;
+            const x = e.touches[0].pageX - wrapper.offsetLeft;
+            const y = e.touches[0].pageY - wrapper.offsetTop;
+            wrapper.scrollLeft = scrollLeft - (x - startX) * 1.8;
+            wrapper.scrollTop = scrollTop - (y - startY) * 1.8;
+        }, { passive: false });
 
-<div class="legend">
-    <span class="section">Leyenda</span>
-    <span><span class="dot" style="background:#e2b04a"></span>Inicio</span>
-    <span><span class="dot" style="background:#10b981"></span>Fin / Éxito</span>
-    <span><span class="dot" style="background:#f59e0b"></span>Decisión</span>
-    <span><span class="dot" style="background:#1e40af"></span>Proceso activo MVP</span>
-    <span><span class="dot" style="background:#b91c1c"></span>Sin precios (Cocina / Compras / SS.GG.)</span>
-    <span><span class="dot" style="background:#6d28d9"></span>Con precios (Maitre / Caja / Gerente)</span>
-    <span><span class="dot" style="background:#374151"></span>🔜 Por ahora no — Fase futura</span>
-</div>
-
-<script>
-    mermaid.initialize({
-        startOnLoad: true, theme: 'dark',
-        themeVariables: {
-            primaryColor:'#1e293b', primaryTextColor:'#e2e8f0',
-            primaryBorderColor:'rgba(226,176,74,0.45)', lineColor:'#7f8ea3',
-            secondaryColor:'#111820', tertiaryColor:'#0a0e14',
-            fontSize:'12.5px', fontFamily:'"Segoe UI",system-ui,sans-serif'
-        },
-        flowchart: { useMaxWidth:true, htmlLabels:true, curve:'basis', padding:20, nodeSpacing:40, rankSpacing:36 }
-    });
-
-    let zoom = 1;
-    const dw = document.getElementById('dw');
-    const gs = () => dw.querySelector('svg');
-    function zd(f){ const s=gs(); if(!s) return; zoom=Math.min(4,Math.max(.2,zoom*f)); s.style.transform=`scale(${zoom})`; s.style.transformOrigin='top left'; }
-    function rd(){ const s=gs(); if(!s) return; zoom=1; s.style.transform='scale(1)'; s.style.transformOrigin='top left'; }
-
-    let pan=false,sx,sy,sl,st;
-    dw.addEventListener('mousedown',e=>{ if(e.target.closest('.zoom-btn')) return; pan=true; dw.style.cursor='grabbing'; sx=e.pageX-dw.offsetLeft; sy=e.pageY-dw.offsetTop; sl=dw.scrollLeft; st=dw.scrollTop; });
-    dw.addEventListener('mousemove',e=>{ if(!pan) return; e.preventDefault(); dw.scrollLeft=sl-(e.pageX-dw.offsetLeft-sx)*1.8; dw.scrollTop=st-(e.pageY-dw.offsetTop-sy)*1.8; });
-    const sp=()=>{ pan=false; dw.style.cursor='grab'; };
-    dw.addEventListener('mouseup',sp); dw.addEventListener('mouseleave',sp);
-    dw.addEventListener('touchstart',e=>{ if(e.target.closest('.zoom-btn')) return; pan=true; sx=e.touches[0].pageX-dw.offsetLeft; sy=e.touches[0].pageY-dw.offsetTop; sl=dw.scrollLeft; st=dw.scrollTop; },{passive:false});
-    dw.addEventListener('touchmove',e=>{ if(!pan) return; dw.scrollLeft=sl-(e.touches[0].pageX-dw.offsetLeft-sx)*1.8; dw.scrollTop=st-(e.touches[0].pageY-dw.offsetTop-sy)*1.8; },{passive:false});
-    dw.addEventListener('touchend',sp);
-</script>
+        wrapper.addEventListener('touchend', stopPan);
+    </script>
 </body>
 </html>
